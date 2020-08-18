@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {useEffect, useState} from 'react'
 import queryString from 'querystring'
 import io from 'socket.io-client'
 import InfoBar from '../../components/InfoBar/InfoBar'
@@ -16,29 +16,33 @@ const botName = 'chatBot';
 let socket
 
 const Chat = ({location}) => {
+    const defaultServer = '217.91.70.18:5000';
 
     const [name, setName] = useState('');
     const [room, setRoom] = useState('');
     const [users, setUsers] = useState('');
+    const [server, setServer] = useState(defaultServer);
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
 
-    const ENDPOINT = 'localhost:5000';
+    // const ENDPOINT = 'http://217.91.70.18:5000';
 
     useEffect(() => {
-        const {name, room} = queryString.parse(location.search.replace('?', ''))
-
-        socket = io(ENDPOINT)
+        const {name, room, server} = queryString.parse(location.search.replace('?', ''))
 
         setRoom(room)
         setName(name)
+        setServer(server)
+
+        socket = io(server)
 
         socket.emit('join', {name, room}, (error) => {
             if (error) {
-                alert(error.error)
+                console.log('undefined',error);
+                alert(error)
             }
         })
-    }, [ENDPOINT, location.search])
+    }, [server, location.search])
 
     useEffect(() => {
         socket.on('message', message => {

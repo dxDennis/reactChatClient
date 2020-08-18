@@ -1,3 +1,4 @@
 #messageList{
     height: 64vh;
+    overflow: auto;
 }
