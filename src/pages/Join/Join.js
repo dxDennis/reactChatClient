@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {Link} from "react-router-dom";
 import ServerSelectorOption from "../../components/ServerList/ServerSelectorOption/ServerSelectorOption";
+import {Container} from "react-bootstrap";
 
 const Join = () => {
 
@@ -14,7 +15,6 @@ const Join = () => {
         default:true,
     }]
 
-
     const defaultSettings = {
         username: 'nurgast',
         room: 'general',
@@ -25,10 +25,8 @@ const Join = () => {
     const [room, setRoom] = useState(defaultSettings.room);
     const [server, setServer] = useState(defaultSettings.server);
 
-    console.log('serverOptions', serverOptions);
-
     return (
-        <div className="container">
+        <div className="container" className="mt-5">
             <div className="card">
                 <div className="card-body">
                     <h1 className="card-head">Join</h1>
