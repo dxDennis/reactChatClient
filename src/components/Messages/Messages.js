@@ -9,7 +9,7 @@ const Messages = ({messages,name,botName}) => {
     return (
         <div className="list-group" id="messageList">
         <ScrollToBottom>
-            {messages.map((message, i) => <div key={i}><Message message={message} name={name} botName={botName}/></div>)}
+            {messages.map((message, i) => <Message key={i} message={message} name={name} botName={botName}/>)}
         </ScrollToBottom>
         </div>
     )
