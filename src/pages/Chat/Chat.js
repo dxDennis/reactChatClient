@@ -15,23 +15,23 @@ const botName = 'chatBot';
 let socket, joinConnection = 0, updateUserConnection = 0, maxReconnectAttempts = 4;
 const timeStamp = new Date();
 
+const ENDPOINT = process.env.REACT_APP_BASE_SERVER_LIVE_HOST;
+
 const Chat = ({location}) => {
     const [name, setName] = useState('');
     const [room, setRoom] = useState('');
     const [users, setUsers] = useState('');
-    const [server, setServer] = useState('');
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
 
+
     useEffect(() => {
-        console.log('useEffect #1')
-        const {name, room, server} = queryString.parse(location.search.replace('?', ''))
+        const {name, room} = queryString.parse(location.search.replace('?', ''))
 
         setRoom(room)
         setName(name)
-        setServer(server)
 
-        socket = io(server)
+        socket = io(ENDPOINT)
 
         setMessages(messages => [...messages, {text: `connecting to Web-Server`, user: 'system', timeStamp: timeStamp}])
 
@@ -50,8 +50,6 @@ const Chat = ({location}) => {
         });
         socket.on('reconnect', (attemptNumber) => {
             setMessages(messages => [...messages, {text: `reconnect attemptNumber #${attemptNumber}`, user: botName, timeStamp: timeStamp}])
-
-            console.log('NEW EVENT #################################################### reconnect attemptNumber:', attemptNumber);
         });
         socket.on('reconnecting', (attemptNumber) => {
             setMessages(messages => [...messages, {
@@ -59,31 +57,33 @@ const Chat = ({location}) => {
                 user: 'system',
                 currentTime: timeStamp
             }])
-            console.log('NEW EVENT #################################################### reconnecting attemptNumber:', attemptNumber);
         });
 
         socket.on('reconnect_error', (error) => {
             setMessages(messages => [...messages, {text: `reconnect error - ${error.toString()}`, user: 'system', timeStamp: timeStamp}])
-            console.log('NEW EVENT #################################################### reconnecting error:', error.toString());
         });
+
         socket.on('connect_error', (error) => {
             setMessages(messages => [...messages, {text: `connection error ${error.toString()}`, user: 'system', timeStamp: timeStamp}])
-            console.log('NEW EVENT #################################################### connect_error error:', error.toString());
         });
+
         socket.on('reconnect_failed', (error) => {
             setMessages(messages => [...messages, {text: `reconnection failed`, user: 'system', timeStamp: timeStamp}])
-            console.log('NEW EVENT #################################################### reconnect_failed error:', error.toString());
         });
+
         socket.on('ping', () => {
             console.log('NEW EVENT #################################################### ping ');
         });
+
         socket.on('pong', (latency) => {
             console.log('NEW EVENT #################################################### pong latency:', latency);
         });
+
         socket.on('error', (error) => {
             setMessages(messages => [...messages, {text: `fatal error ${error.toString()}`, user: 'system',timeStamp: timeStamp}])
             console.log('NEW EVENT #################################################### error error:', error.toString());
         });
+
         socket.on('disconnect', (reason) => {
             setMessages(messages => [...messages, {text: `disconnect  reason: ${reason.toString()}`, user: 'system',timeStamp: timeStamp}])
             console.log('NEW EVENT #################################################### disconnect reason:', reason);
@@ -144,7 +144,7 @@ const Chat = ({location}) => {
     }
 
     return (
-        <Container data-server={server} className="mt-5">
+        <Container className="mt-5">
             <Row>
                 <Col>
                     <Card className="my-2">
